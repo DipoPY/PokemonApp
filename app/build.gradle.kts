@@ -53,6 +53,7 @@ android {
 
 dependencies {
 
+    implementation(libs.firebase.components)
     val room_version = "2.6.1"
     implementation ("androidx.work:work-runtime:2.9.0")
     implementation("com.github.skydoves:landscapist-glide:2.3.3")

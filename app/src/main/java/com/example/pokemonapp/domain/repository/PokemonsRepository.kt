@@ -77,7 +77,6 @@ class NetworkPokemonsRepository(
         var counter = 0
         return withContext(Dispatchers.IO) {
             pokemonDao.getAllPokemons().map {
-                Log.d("Myy", "${it.name} ${counter++}")
                 Pokemon(it.name, it.url, it.image, it.statHp, it.statAttack, it.statDefense)
             }
         }
