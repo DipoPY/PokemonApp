@@ -1,8 +1,8 @@
 package com.example.pokemonapp
 
 import android.app.Application
-import com.example.pokemonapp.data.AppContainer
-import com.example.pokemonapp.data.DefaultAppContainer
+import com.example.pokemonapp.domain.retrofit.AppContainer
+import com.example.pokemonapp.domain.retrofit.DefaultAppContainer
 
 class PokemonsApplication : Application() {
     lateinit var container: AppContainer
