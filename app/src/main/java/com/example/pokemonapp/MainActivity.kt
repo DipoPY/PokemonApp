@@ -8,8 +8,8 @@ import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresExtension
-import com.example.pokemonapp.ui.PokemonsApp
-import com.example.pokemonapp.ui.theme.PokemonAppTheme
+import com.example.pokemonapp.presentation.ui.PokemonsApp
+import com.example.pokemonapp.presentation.ui.theme.PokemonAppTheme
 
 class MainActivity : ComponentActivity() {
     @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
