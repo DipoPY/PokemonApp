@@ -1,6 +1,7 @@
 package com.example.pokemonapp.presentation.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -32,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -39,18 +42,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.example.pokemonapp.R
 import com.example.pokemonapp.data.model.Pokemon
 import com.example.pokemonapp.ui.screens.help.CustomFontFamily
 import com.example.pokemonapp.presentation.ui.theme.Pink80
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -65,6 +72,8 @@ fun PokemonsScreen(
     var isSearchVisible by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val lazyGridState = rememberLazyGridState()
+    val coroutineScope = rememberCoroutineScope()
 
     val filteredPokemons = pokemons.filter {
         it.name?.contains(searchQuery, ignoreCase = true)!!
@@ -77,12 +86,12 @@ fun PokemonsScreen(
         ) {
             Text(text = "Nothing was found", fontFamily = CustomFontFamily, fontSize = 40.sp)
         }
-
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
+            state = lazyGridState,
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInteropFilter {
@@ -93,7 +102,6 @@ fun PokemonsScreen(
                     }
                     false
                 }
-
         ) {
             itemsIndexed(filteredPokemons) { _, pokemon ->
                 PokemonsCard(
@@ -136,7 +144,12 @@ fun PokemonsScreen(
         }
 
         IconButton(
-            onClick = retryAction,
+            onClick = {
+                coroutineScope.launch {
+                    lazyGridState.scrollToItem(0)
+                }
+                retryAction()
+            },
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(16.dp)
@@ -151,8 +164,6 @@ fun PokemonsScreen(
     }
 }
 
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun PokemonsCard(
     pokemon: Pokemon,
@@ -181,18 +192,16 @@ fun PokemonsCard(
                     Box(modifier = Modifier.matchParentSize()) {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center)
-
                         )
                     }
                 },
                 failure = {
-                    Box(modifier = Modifier.matchParentSize()) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-
-                        )
+                    Box(
+                        modifier = Modifier.matchParentSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(bitmap = ImageBitmap.imageResource(R.drawable.pokemon_ball_removebg_preview), contentDescription = "pokemon")
                     }
-
                 }
             )
 
@@ -251,7 +260,6 @@ fun SearchBarForMainScreen(
                 }
             ),
             modifier = Modifier.fillMaxWidth(),
-
-            )
+        )
     }
 }
