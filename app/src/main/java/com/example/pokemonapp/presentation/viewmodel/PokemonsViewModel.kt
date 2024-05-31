@@ -53,7 +53,7 @@ class PokemonsViewModel(
             }
             if (isInternetConnected(context)) {
                 if (cachedPokemons.size < 1302) {
-                    loadPokemonsFromApi(0, 50)
+                    loadPokemonsFromApi(cachedPokemons.size, cachedPokemons.size + 50)
 
                 }
             } else if (cachedPokemons.isEmpty()) {
